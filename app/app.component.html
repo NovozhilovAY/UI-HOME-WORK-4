@@ -1,0 +1,108 @@
+<div class = "menu">
+  <input type="radio" name="selector"  checked (click)="setSelectedPanel('find')">
+  <label class="menu-item">Найти</label><br>
+  <input type="radio" name="selector" (click)="setSelectedPanel('filter')">
+  <label class="menu-item">Фильтр</label><br>
+  <input type="radio" name="selector" #addRB (click)="setSelectedPanel('add')">
+  <label class="menu-item">Добавить</label><br>
+</div>
+
+<div [ngSwitch]="selectedPanel" class="menu-panel">
+  <div *ngSwitchCase="'find'">
+    <div>
+      <p><label>Имя</label><br><input #fname></p>
+      <p><label>Фамилия</label><br><input #lname></p>
+      <button (click)="findStudents(fname.value, lname.value)">Найти</button>
+    </div>
+    <ng-container [ngTemplateOutlet]="tableTemplate" [ngTemplateOutletContext]="{allStudents: students}">
+
+    </ng-container>
+  </div>
+  <div *ngSwitchCase="'filter'">
+    <div>
+      <input type="radio" name="filterSelector"  checked (click)="selectedFilter = 'averageMark'">
+      <label>По среднему баллу</label><br>
+      <input type="radio" name="filterSelector" (click)="selectedFilter = 'dateOfBirth'">
+      <label>По дате рождения</label><br>
+    </div>
+    <div [ngSwitch]="selectedFilter">
+      <div *ngSwitchCase="'averageMark'">
+        <p>От <br><input #minMark type="number" min="0" max="5"></p>
+        <p>До <br><input #maxMark type="number" min="0" max="5"></p>
+        <button (click)="filterByMark(+minMark.value, +maxMark.value)">ОК</button>
+        <ng-container [ngTemplateOutlet]="tableTemplate" [ngTemplateOutletContext]="{allStudents: filteredStudents}">
+        </ng-container>
+      </div>
+
+      <div *ngSwitchCase="'dateOfBirth'">
+        <p>От <br><input #minDay type="date"></p>
+        <p>До <br><input #maxDay type="date"></p>
+        <button (click)="filterByDate(minDay.value, maxDay.value)">ОК</button>
+        <ng-container [ngTemplateOutlet]="tableTemplate" [ngTemplateOutletContext]="{allStudents: filteredStudents}">
+        </ng-container>
+      </div>
+
+
+    </div>
+  </div>
+  <div *ngSwitchCase="'add'">
+    <form novalidate #form = "ngForm">
+      <div ngModelGroup="fullName">
+        <div>
+          <p>
+            <label>Имя</label><br>
+            <input name="firstName" required minlength="3" [(ngModel)]="newStudent.firstName" />
+          </p>
+        </div>
+        <div>
+          <p>
+            <label>Фамилия</label><br>
+            <input name="lastName" required minlength="3" [(ngModel)]="newStudent.lastName" />
+          </p>
+        </div>
+        <div>
+          <p>
+            <label>Отчество</label><br>
+            <input class="form-control" name="middleName" required minlength="3" [(ngModel)]="newStudent.middleName" />
+          </p>
+        </div>
+      </div>
+      <div>
+        <p>
+          <label>Дата рождения</label><br>
+          <input type="date" class="form-control" name="dateOfBirth" required [(ngModel)]="newStudent.dateOfBirth" />
+        </p>
+      </div>
+      <div>
+        <p>
+          <label>Средний балл</label><br>
+          <input type="number" name="averageMark" required min="0" max="5" [(ngModel)]="newStudent.averageMark" />
+        </p>
+      </div>
+      <button class="add-btn" type="submit"  [disabled]="form.invalid" (click)="addStudent()">Добавить</button>
+      <button type="submit" [disabled]="form.invalid || !isUpdate" (click)="updateStudent()">Редактировать</button>
+      <ng-container [ngTemplateOutlet]="tableTemplate" [ngTemplateOutletContext]="{allStudents: students}">
+      </ng-container>
+    </form>
+  </div>
+</div>
+<ng-template #tableTemplate let-allStudents="allStudents">
+  <table class="table">
+  <tr (click)="sort()">
+    <th class="table-cell" (click)="sortBy = 'firstName'">Имя</th>
+    <th class="table-cell" (click)="sortBy = 'lastName'">Фамилия</th>
+    <th class="table-cell" (click)="sortBy = 'middleName'">Отчество</th>
+    <th class="table-cell" (click)="sortBy = 'dateOfBirth'" >Дата рождения</th>
+    <th class="table-cell" (click)="sortBy = 'averageMark'">Средний балл</th>
+  </tr>
+  <tr *ngFor="let student of allStudents;" [ngClass]="foundStudents.includes(student) ? 'foundStudent' : 'rowOfTable'">
+    <td class="table-cell">{{student.firstName}}</td>
+    <td class="table-cell">{{student.lastName}}</td>
+    <td class="table-cell">{{student.middleName}}</td>
+    <td class="table-cell">{{student.dateOfBirth}}</td>
+    <td class="table-cell">{{student.averageMark}}</td>
+    <td class="table-button-cell"><button (click)="openDeleteDialog(student)">&#10006;</button></td>
+    <td class="table-button-cell table-cell"><button (click)="setUpdatedStudent(student);addRB.checked = true">&#9998;</button></td>
+  </tr>
+  </table>
+</ng-template>

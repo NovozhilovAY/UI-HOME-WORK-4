@@ -1,0 +1,50 @@
+.foundStudent{
+  background-color: darksalmon;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.rowOfTable{
+  background-color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.menu{
+  margin-left: 10px;
+  width:  100px;
+  height: 250px;
+  float: left;
+}
+
+.menu-panel{
+  margin-top: 50px;
+  margin-right: 4px;
+  margin-left: 120px;
+}
+
+
+.table{
+  margin-top: 50px;
+  border-width: 1px;
+  border-color: black;
+  width:  80%;
+  border-collapse: collapse;
+}
+
+.table-cell{
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.table-button-cell{
+  text-align: center;
+}
+
+.add-btn{
+  margin-right: 10px;
+}
+
